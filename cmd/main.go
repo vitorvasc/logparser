@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"os"
 
 	"logparser/internal/adapter/dto"
@@ -43,7 +44,9 @@ func main() {
 				println("Type any key to continue...")
 				scanner.Scan()
 			} else {
-				println(match)
+				result, _ := json.MarshalIndent(match, "", "\t")
+				print(string(result))
+				println("\nType any key to continue...")
 			}
 		case "3":
 			println("Generating report by weapon type...")

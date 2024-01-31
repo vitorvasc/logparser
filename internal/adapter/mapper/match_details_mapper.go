@@ -8,6 +8,7 @@ import (
 func FromMatchToMatchDetailsDto(match *domain.Match) *dto.MatchDetails {
 	matchDetails := new(dto.MatchDetails)
 
+	matchDetails.ID = match.ID
 	matchDetails.TotalKills = match.TotalKills
 	matchDetails.Players = make([]dto.Player, 0, len(match.Players))
 	matchDetails.Kills = make(map[string]dto.Kill)

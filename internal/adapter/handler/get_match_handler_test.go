@@ -27,6 +27,7 @@ func TestGetMatchHandler_GetMatchByID(t *testing.T) {
 			serviceMock: getDefaultGetMatchServiceMock(),
 			matchID:     "1",
 			expectedMatchDetails: &dto.MatchDetails{
+				ID:         "1",
 				TotalKills: 5,
 				Players: []dto.Player{
 					"Isgalamido",
