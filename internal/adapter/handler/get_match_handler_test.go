@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"logparser/internal/adapter/dto"
+	"logparser/internal/adapter/utils"
 	"logparser/internal/config/defines"
 	"logparser/internal/core/domain"
 	"logparser/internal/core/errors"
@@ -16,28 +17,29 @@ import (
 
 func TestGetMatchHandler_GetMatchByID(t *testing.T) {
 	testCases := []struct {
-		name                 string
-		serviceMock          port.GetMatchService
-		matchID              string
-		expectedMatchDetails *dto.MatchDetails
-		expectedError        error
+		name          string
+		serviceMock   port.GetMatchService
+		matchID       string
+		expected      map[string]*dto.MatchDetails
+		expectedError error
 	}{
 		{
 			name:        "given valid existing match id should return match details",
 			serviceMock: getDefaultGetMatchServiceMock(),
-			matchID:     "1",
-			expectedMatchDetails: &dto.MatchDetails{
-				ID:         "1",
-				TotalKills: 5,
-				Players: []dto.Player{
-					"Isgalamido",
-					"Mocinha",
-					"Zeh",
-				},
-				Kills: map[string]dto.Kill{
-					"Isgalamido": 1,
-					"Mocinha":    1,
-					"Zeh":        0,
+			matchID:     utils.FormatMatchID("1"),
+			expected: map[string]*dto.MatchDetails{
+				"game_1": {
+					TotalKills: 5,
+					Players: []dto.Player{
+						"Isgalamido",
+						"Mocinha",
+						"Zeh",
+					},
+					Kills: map[string]dto.Kill{
+						"Isgalamido": 1,
+						"Mocinha":    1,
+						"Zeh":        0,
+					},
 				},
 			},
 			expectedError: nil,
@@ -51,9 +53,9 @@ func TestGetMatchHandler_GetMatchByID(t *testing.T) {
 					Once()
 				return serviceMock
 			}(),
-			matchID:              "2",
-			expectedMatchDetails: nil,
-			expectedError:        errors.NewError(defines.MatchNotFoundErrorCode, "match not found"),
+			matchID:       utils.FormatMatchID("2"),
+			expected:      nil,
+			expectedError: errors.NewError(defines.MatchNotFoundErrorCode, "match not found"),
 		},
 	}
 
@@ -62,7 +64,7 @@ func TestGetMatchHandler_GetMatchByID(t *testing.T) {
 			handler := NewGetMatchHandler(testCase.serviceMock)
 			matchDetails, err := handler.GetMatchByID(testCase.matchID)
 			require.Equal(t, testCase.expectedError, err)
-			require.Equal(t, testCase.expectedMatchDetails, matchDetails)
+			require.Equal(t, testCase.expected, matchDetails)
 		})
 
 	}
@@ -71,7 +73,7 @@ func TestGetMatchHandler_GetMatchByID(t *testing.T) {
 func getDefaultGetMatchServiceMock() port.GetMatchService {
 	serviceMock := service.NewGetMatchServiceMock()
 	serviceMock.On("GetMatchByID", mock.Anything).Return(&domain.Match{
-		ID:         "1",
+		ID:         "game_1",
 		TotalKills: 5,
 		Players: []*domain.Player{
 			{

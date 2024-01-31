@@ -12,7 +12,7 @@ import (
 )
 
 type ProcessFileFunc func(*os.File) *dto.ProcessResult
-type GetMatchFunc func(string) (*dto.MatchDetails, error)
+type GetSingleMatchFunc func(string) (map[string]*dto.MatchDetails, error)
 
 const (
 	LogFileLocation = "resources/qgames.log"
@@ -84,7 +84,7 @@ func processLogFileAndLoadMatches(handler ProcessFileFunc) *dto.ProcessResult {
 	return handler(file)
 }
 
-func generateReportByGameNumber(scanner *bufio.Scanner, handler GetMatchFunc) (*dto.MatchDetails, error) {
+func generateReportByGameNumber(scanner *bufio.Scanner, handler GetSingleMatchFunc) (map[string]*dto.MatchDetails, error) {
 	print("Please, enter the game number: ")
 	scanner.Scan()
 	return handler(scanner.Text())

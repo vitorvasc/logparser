@@ -17,7 +17,7 @@ func NewGetMatchHandler(getMatchService port.GetMatchService) GetMatchHandler {
 	}
 }
 
-func (h GetMatchHandler) GetMatchByID(matchID string) (*dto.MatchDetails, error) {
+func (h GetMatchHandler) GetMatchByID(matchID string) (map[string]*dto.MatchDetails, error) {
 	match, err := h.service.GetMatchByID(utils.FormatMatchID(matchID))
 	if err != nil {
 		return nil, err

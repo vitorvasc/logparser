@@ -18,7 +18,7 @@ func TestFromMatchToMatchDetailsDto(t *testing.T) {
 		{
 			name: "should return match details dto",
 			match: &domain.Match{
-				ID:         "1",
+				ID:         "game_1",
 				TotalKills: 5,
 				Players: []*domain.Player{
 					{
@@ -110,8 +110,8 @@ func TestFromMatchToMatchDetailsDto(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			matchDetails := FromMatchToMatchDetailsDto(testCase.match)
 
-			require.Equal(t, testCase.expected.TotalKills, matchDetails.TotalKills)
-			require.Equal(t, len(testCase.expected.Players), len(matchDetails.Players))
+			require.Equal(t, testCase.expected.TotalKills, matchDetails[testCase.match.ID].TotalKills)
+			require.Equal(t, len(testCase.expected.Players), len(matchDetails[testCase.match.ID].Players))
 		})
 	}
 }

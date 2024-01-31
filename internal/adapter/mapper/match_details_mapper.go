@@ -5,18 +5,19 @@ import (
 	"logparser/internal/core/domain"
 )
 
-func FromMatchToMatchDetailsDto(match *domain.Match) *dto.MatchDetails {
-	matchDetails := new(dto.MatchDetails)
+func FromMatchToMatchDetailsDto(match *domain.Match) map[string]*dto.MatchDetails {
+	matchDetailsMap := make(map[string]*dto.MatchDetails)
+	matchID := match.ID
 
-	matchDetails.ID = match.ID
-	matchDetails.TotalKills = match.TotalKills
-	matchDetails.Players = make([]dto.Player, 0, len(match.Players))
-	matchDetails.Kills = make(map[string]dto.Kill)
+	matchDetailsMap[matchID] = new(dto.MatchDetails)
+	matchDetailsMap[matchID].TotalKills = match.TotalKills
+	matchDetailsMap[matchID].Players = make([]dto.Player, 0, len(match.Players))
+	matchDetailsMap[matchID].Kills = make(map[string]dto.Kill)
 
 	for _, player := range match.Players {
-		matchDetails.Players = append(matchDetails.Players, dto.Player(player.Name))
-		matchDetails.Kills[player.Name] = dto.Kill(player.Kills)
+		matchDetailsMap[matchID].Players = append(matchDetailsMap[matchID].Players, dto.Player(player.Name))
+		matchDetailsMap[matchID].Kills[player.Name] = dto.Kill(player.Kills)
 	}
 
-	return matchDetails
+	return matchDetailsMap
 }
