@@ -7,7 +7,7 @@ type MatchRepository interface {
 	FindMatchByID(id string) (*domain.Match, error)
 }
 
-type CreateMatchHistoryService interface {
+type CreateMatchService interface {
 	BulkCreate(historyList []*domain.MatchHistory) []*domain.BulkCreationResult
 	Create(history *domain.MatchHistory) (*domain.Match, error)
 }

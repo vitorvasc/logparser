@@ -267,7 +267,7 @@ func TestCreateMatchHistoryService_Create(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			matchService := NewCreateMatchHistoryService(testCase.matchRepository)
+			matchService := NewCreateMatchService(testCase.matchRepository)
 			result, err := matchService.Create(testCase.matchHistory)
 			if !reflect.DeepEqual(err, testCase.expectedError) {
 				t.Errorf("expected error %v, got %v", testCase.expectedError, err)
@@ -342,7 +342,7 @@ func TestCreateMatchHistoryService_BulkCreate(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			matchService := NewCreateMatchHistoryService(testCase.matchRepository)
+			matchService := NewCreateMatchService(testCase.matchRepository)
 			result := matchService.BulkCreate(testCase.matchHistoryList)
 			if len(result) != len(testCase.expectedResult) {
 				t.Errorf("expected result length %v, got %v", len(testCase.expectedResult), len(result))

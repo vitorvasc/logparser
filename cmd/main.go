@@ -10,11 +10,18 @@ import (
 	"logparser/internal/core/service"
 )
 
+type ProcessFileFunc func(*os.File) *dto.ProcessResult
+
 const (
 	LogFileLocation = "resources/qgames.log"
 )
 
 func main() {
+	// dependencies
+	matchRepository := memorydb.NewMatchRepository()
+	matchService := service.NewCreateMatchService(matchRepository)
+	logHandler := handler.NewLogFileHandler(matchService)
+
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		renderMenu()
@@ -23,7 +30,7 @@ func main() {
 		scanner.Scan()
 		switch scanner.Text() {
 		case "1":
-			_ = processLogFileAndLoadMatches()
+			_ = processLogFileAndLoadMatches(logHandler.CreateMatchesFromLogFile)
 			println("Matches loaded successfully. Type any key to continue...")
 			scanner.Scan()
 		case "2":
@@ -46,20 +53,15 @@ func renderMenu() {
 	println("9 - Exit")
 }
 
-func processLogFileAndLoadMatches() *dto.ProcessResult {
+func processLogFileAndLoadMatches(handler ProcessFileFunc) *dto.ProcessResult {
+	// open log file
 	file, err := os.Open(LogFileLocation)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
 
-	matchRepository := memorydb.NewMatchRepository()
-
-	matchService := service.NewCreateMatchHistoryService(matchRepository)
-
-	logHandler := handler.NewLogFileHandler(matchService)
-
-	return logHandler.CreateMatchesFromLogFile(file)
+	return handler(file)
 }
 
 func generateReportByGameNumber(scanner *bufio.Scanner) {

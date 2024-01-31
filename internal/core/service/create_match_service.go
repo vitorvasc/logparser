@@ -13,17 +13,17 @@ import (
 	"logparser/internal/core/port"
 )
 
-type createMatchHistoryService struct {
+type createMatchService struct {
 	repository port.MatchRepository
 }
 
-func NewCreateMatchHistoryService(matchRepository port.MatchRepository) port.CreateMatchHistoryService {
-	return &createMatchHistoryService{
+func NewCreateMatchService(matchRepository port.MatchRepository) port.CreateMatchService {
+	return &createMatchService{
 		repository: matchRepository,
 	}
 }
 
-func (service createMatchHistoryService) BulkCreate(matchHistoryList []*domain.MatchHistory) []*domain.BulkCreationResult {
+func (service createMatchService) BulkCreate(matchHistoryList []*domain.MatchHistory) []*domain.BulkCreationResult {
 	totalMatches := len(matchHistoryList)
 	responseChannel := make(chan *domain.BulkCreationResult, totalMatches)
 	for _, matchHistory := range matchHistoryList {
@@ -41,7 +41,7 @@ func (service createMatchHistoryService) BulkCreate(matchHistoryList []*domain.M
 	return result
 }
 
-func (service createMatchHistoryService) Create(matchHistory *domain.MatchHistory) (*domain.Match, error) {
+func (service createMatchService) Create(matchHistory *domain.MatchHistory) (*domain.Match, error) {
 	match := domain.NewMatch(matchHistory.ID)
 	for _, logEntry := range matchHistory.Logs {
 		switch logEntry.Type {
@@ -73,7 +73,7 @@ func (service createMatchHistoryService) Create(matchHistory *domain.MatchHistor
 	return match, nil
 }
 
-func (service createMatchHistoryService) getPlayerInfo(rawLog string) (*domain.Player, error) {
+func (service createMatchService) getPlayerInfo(rawLog string) (*domain.Player, error) {
 	playerInfo := regexp.MustCompile(defines.GetPlayerInfoRegex)
 	if match := playerInfo.FindStringSubmatch(rawLog); len(match) > 0 {
 		playerID, _ := strconv.Atoi(match[1])
@@ -87,7 +87,7 @@ func (service createMatchHistoryService) getPlayerInfo(rawLog string) (*domain.P
 	return nil, errors.NewError(defines.GetPlayerInfoErrorCode, errorMsg)
 }
 
-func (service createMatchHistoryService) getKillInfo(rawLog string) (*domain.Kill, error) {
+func (service createMatchService) getKillInfo(rawLog string) (*domain.Kill, error) {
 	killInfo := regexp.MustCompile(defines.GetKillInfoRegex)
 	if match := killInfo.FindStringSubmatch(rawLog); len(match) > 0 {
 		killerID, _ := strconv.Atoi(match[1])
@@ -102,7 +102,7 @@ func (service createMatchHistoryService) getKillInfo(rawLog string) (*domain.Kil
 	return nil, errors.NewError(defines.GetKillInfoErrorCode, errorMsg)
 }
 
-func (service createMatchHistoryService) processRoutine(matchHistory *domain.MatchHistory, responseChannel chan *domain.BulkCreationResult) {
+func (service createMatchService) processRoutine(matchHistory *domain.MatchHistory, responseChannel chan *domain.BulkCreationResult) {
 	var mutex sync.Mutex
 	mutex.Lock()
 	defer mutex.Unlock()

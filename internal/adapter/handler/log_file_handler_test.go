@@ -16,7 +16,7 @@ import (
 func TestCreateMatchesFromLogFile(t *testing.T) {
 	testCases := []struct {
 		name        string
-		serviceMock port.CreateMatchHistoryService
+		serviceMock port.CreateMatchService
 		inputFile   *os.File
 		expected    *dto.ProcessResult
 	}{
@@ -48,8 +48,8 @@ func TestCreateMatchesFromLogFile(t *testing.T) {
 	}
 }
 
-func getDefaultServiceMock() port.CreateMatchHistoryService {
-	serviceMock := service.NewCreateMatchHistoryServiceMock()
+func getDefaultServiceMock() port.CreateMatchService {
+	serviceMock := service.NewCreateMatchServiceMock()
 	serviceMock.On("BulkCreate", mock.Anything).Return([]*domain.BulkCreationResult{
 		{
 			MatchID:      "3",

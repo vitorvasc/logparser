@@ -12,17 +12,17 @@ import (
 	"logparser/internal/core/port"
 )
 
-type Handler struct {
-	service port.CreateMatchHistoryService
+type LogFileHandler struct {
+	service port.CreateMatchService
 }
 
-func NewLogFileHandler(processMatchHistoryService port.CreateMatchHistoryService) Handler {
-	return Handler{
-		service: processMatchHistoryService,
+func NewLogFileHandler(createMatchService port.CreateMatchService) LogFileHandler {
+	return LogFileHandler{
+		service: createMatchService,
 	}
 }
 
-func (h Handler) CreateMatchesFromLogFile(source *os.File) *dto.ProcessResult {
+func (h LogFileHandler) CreateMatchesFromLogFile(source *os.File) *dto.ProcessResult {
 	logEntriesByMatchID := h.filterAndGroupLogEntriesByMatchID(source)
 
 	matchHistoryList := make([]*domain.MatchHistory, 0, len(logEntriesByMatchID))
@@ -37,7 +37,7 @@ func (h Handler) CreateMatchesFromLogFile(source *os.File) *dto.ProcessResult {
 	return mapper.FromBulkCreationResultToProcessResult(processedMatches)
 }
 
-func (h Handler) filterAndGroupLogEntriesByMatchID(source *os.File) map[string][]dto.LogEntry {
+func (h LogFileHandler) filterAndGroupLogEntriesByMatchID(source *os.File) map[string][]dto.LogEntry {
 	currentMatchID := 0
 	matchesMap := make(map[string][]dto.LogEntry)
 
@@ -62,6 +62,6 @@ func (h Handler) filterAndGroupLogEntriesByMatchID(source *os.File) map[string][
 	return matchesMap
 }
 
-func (h Handler) formatID(gameID int) string {
+func (h LogFileHandler) formatID(gameID int) string {
 	return "game_" + strconv.Itoa(gameID)
 }
