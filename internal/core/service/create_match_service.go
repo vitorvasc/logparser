@@ -35,7 +35,6 @@ func (service createMatchService) BulkCreate(matchHistoryList []*domain.MatchHis
 		result[i] = <-responseChannel
 	}
 
-	log.Printf("[INFO] Processed matches: %d", len(result))
 	close(responseChannel)
 
 	return result

@@ -34,8 +34,9 @@ func main() {
 		scanner.Scan()
 		switch scanner.Text() {
 		case "1":
-			_ = processLogFileAndLoadMatches(logFileHandler.CreateMatchesFromLogFile)
-			print("Matches loaded successfully.")
+			result := processLogFileAndLoadMatches(logFileHandler.CreateMatchesFromLogFile)
+			println()
+			print(result.TotalProcessedMatches, " matches processed successfully.")
 			typeAnyKeyToContinue(scanner)
 		case "2":
 			match, err := generateReportByGameNumber(scanner, getMatchHandler.GetMatchByID)
@@ -70,6 +71,8 @@ func renderMenu() {
 }
 
 func processLogFileAndLoadMatches(handler ProcessFileFunc) *dto.ProcessResult {
+	println()
+	println()
 	println("Processing log file and loading matches...")
 	// open log file
 	file, err := os.Open(LogFileLocation)
@@ -88,6 +91,7 @@ func generateReportByGameNumber(scanner *bufio.Scanner, handler GetMatchFunc) (*
 }
 
 func typeAnyKeyToContinue(scanner *bufio.Scanner) {
+	println()
 	print("\nType any key to continue...")
 	scanner.Scan()
 }
