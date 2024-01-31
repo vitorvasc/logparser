@@ -1,9 +1,9 @@
 package memorydb
 
 import (
-	"errors"
-
+	"logparser/internal/config/defines"
 	"logparser/internal/core/domain"
+	apperrors "logparser/internal/core/errors"
 	"logparser/internal/core/port"
 )
 
@@ -17,15 +17,15 @@ func NewMatchRepository() port.MatchRepository {
 	}
 }
 
-func (db *repository) SaveMatch(match *domain.Match) error {
+func (db *repository) SaveMatch(match *domain.Match) apperrors.BaseError {
 	db.instance[match.ID] = match
 	return nil
 }
 
-func (db *repository) FindMatchByID(id string) (*domain.Match, error) {
+func (db *repository) FindMatchByID(id string) (*domain.Match, apperrors.BaseError) {
 	match, ok := db.instance[id]
 	if !ok {
-		return nil, errors.New("match not found")
+		return nil, apperrors.NewError(defines.MatchNotFoundErrorCode, "match not found")
 	}
 	return match, nil
 }
