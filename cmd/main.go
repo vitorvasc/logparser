@@ -12,7 +12,8 @@ import (
 )
 
 type ProcessFileFunc func(*os.File) *dto.ProcessResult
-type GetSingleMatchFunc func(string) (map[string]*dto.MatchDetails, error)
+type GetReportByMatchID func(string) (map[string]*dto.MatchDetails, error)
+type GetCompleteReportByMatchID func(string) (map[string]*dto.MatchDetails, error)
 
 const (
 	LogFileLocation = "resources/qgames.log"
@@ -39,7 +40,7 @@ func main() {
 			print(result.TotalProcessedMatches, " matches processed successfully.")
 			typeAnyKeyToContinue(scanner)
 		case "2":
-			match, err := generateReportByGameNumber(scanner, getMatchHandler.GetMatchByID)
+			match, err := generateReportByGameNumber(scanner, getMatchHandler.GetSimpleReportByMatchID)
 			if err != nil {
 				print("An error occurred while generating the report: ", err.Error())
 				typeAnyKeyToContinue(scanner)
@@ -50,7 +51,16 @@ func main() {
 			print(string(result))
 			typeAnyKeyToContinue(scanner)
 		case "3":
-			println("Generating report by weapon type...")
+			match, err := generateReportByGameNumber(scanner, getMatchHandler.GetCompleteReportByMatchID)
+			if err != nil {
+				print("An error occurred while generating the report: ", err.Error())
+				typeAnyKeyToContinue(scanner)
+				continue
+			}
+
+			result, _ := json.MarshalIndent(match, "", "\t")
+			print(string(result))
+			typeAnyKeyToContinue(scanner)
 		case "9":
 			println("Exiting...")
 			os.Exit(0)
@@ -84,7 +94,7 @@ func processLogFileAndLoadMatches(handler ProcessFileFunc) *dto.ProcessResult {
 	return handler(file)
 }
 
-func generateReportByGameNumber(scanner *bufio.Scanner, handler GetSingleMatchFunc) (map[string]*dto.MatchDetails, error) {
+func generateReportByGameNumber(scanner *bufio.Scanner, handler GetReportByMatchID) (map[string]*dto.MatchDetails, error) {
 	print("Please, enter the game number: ")
 	scanner.Scan()
 	return handler(scanner.Text())

@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetMatchHandler_GetMatchByID(t *testing.T) {
+func TestGetMatchHandler_GetSimpleReportByMatchID(t *testing.T) {
 	testCases := []struct {
 		name          string
 		serviceMock   port.GetMatchService
@@ -26,7 +26,7 @@ func TestGetMatchHandler_GetMatchByID(t *testing.T) {
 		{
 			name:        "given valid existing match id should return match details",
 			serviceMock: getDefaultGetMatchServiceMock(),
-			matchID:     utils.FormatMatchID("1"),
+			matchID:     "1",
 			expected: map[string]*dto.MatchDetails{
 				"game_1": {
 					TotalKills: 5,
@@ -35,7 +35,7 @@ func TestGetMatchHandler_GetMatchByID(t *testing.T) {
 						"Mocinha",
 						"Zeh",
 					},
-					Kills: map[string]dto.Kill{
+					Kills: map[string]int{
 						"Isgalamido": 1,
 						"Mocinha":    1,
 						"Zeh":        0,
@@ -62,7 +62,67 @@ func TestGetMatchHandler_GetMatchByID(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			handler := NewGetMatchHandler(testCase.serviceMock)
-			matchDetails, err := handler.GetMatchByID(testCase.matchID)
+			matchDetails, err := handler.GetSimpleReportByMatchID(testCase.matchID)
+			require.Equal(t, testCase.expectedError, err)
+			require.Equal(t, testCase.expected, matchDetails)
+		})
+
+	}
+}
+
+func TestGetMatchHandler_GetCompleteReportByMatchID(t *testing.T) {
+	testCases := []struct {
+		name          string
+		serviceMock   port.GetMatchService
+		matchID       string
+		expected      map[string]*dto.MatchDetails
+		expectedError error
+	}{
+		{
+			name:        "given valid existing match id should return match details",
+			serviceMock: getDefaultGetMatchServiceMock(),
+			matchID:     "1",
+			expected: map[string]*dto.MatchDetails{
+				"game_1": {
+					TotalKills: 5,
+					Players: []dto.Player{
+						"Isgalamido",
+						"Mocinha",
+						"Zeh",
+					},
+					Kills: map[string]int{
+						"Isgalamido": 1,
+						"Mocinha":    1,
+						"Zeh":        0,
+					},
+					KillsByMeans: map[string]int{
+						"MOD_ROCKET":        1,
+						"MOD_ROCKET_SPLASH": 2,
+						"MOD_TRIGGER_HURT":  2,
+					},
+				},
+			},
+			expectedError: nil,
+		},
+		{
+			name: "given invalid match id should return error",
+			serviceMock: func() port.GetMatchService {
+				serviceMock := service.NewGetMatchServiceMock()
+				serviceMock.On("GetMatchByID", mock.Anything).
+					Return(nil, errors.NewError(defines.MatchNotFoundErrorCode, "match not found")).
+					Once()
+				return serviceMock
+			}(),
+			matchID:       utils.FormatMatchID("2"),
+			expected:      nil,
+			expectedError: errors.NewError(defines.MatchNotFoundErrorCode, "match not found"),
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			handler := NewGetMatchHandler(testCase.serviceMock)
+			matchDetails, err := handler.GetCompleteReportByMatchID(testCase.matchID)
 			require.Equal(t, testCase.expectedError, err)
 			require.Equal(t, testCase.expected, matchDetails)
 		})

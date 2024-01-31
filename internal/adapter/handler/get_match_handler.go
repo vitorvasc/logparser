@@ -17,11 +17,20 @@ func NewGetMatchHandler(getMatchService port.GetMatchService) GetMatchHandler {
 	}
 }
 
-func (h GetMatchHandler) GetMatchByID(matchID string) (map[string]*dto.MatchDetails, error) {
+func (h GetMatchHandler) GetSimpleReportByMatchID(matchID string) (map[string]*dto.MatchDetails, error) {
 	match, err := h.service.GetMatchByID(utils.FormatMatchID(matchID))
 	if err != nil {
 		return nil, err
 	}
 
-	return mapper.FromMatchToMatchDetailsDto(match), nil
+	return mapper.FromMatchToMatchDetailsDto(match, false), nil
+}
+
+func (h GetMatchHandler) GetCompleteReportByMatchID(matchID string) (map[string]*dto.MatchDetails, error) {
+	match, err := h.service.GetMatchByID(utils.FormatMatchID(matchID))
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.FromMatchToMatchDetailsDto(match, true), nil
 }
