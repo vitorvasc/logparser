@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"log"
 	"os"
-	"strconv"
 
 	"logparser/internal/adapter/dto"
 	"logparser/internal/adapter/mapper"
+	"logparser/internal/adapter/utils"
 	"logparser/internal/core/domain"
 	"logparser/internal/core/port"
 )
@@ -50,7 +50,7 @@ func (h LogFileHandler) filterAndGroupLogEntriesByMatchID(source *os.File) map[s
 		}
 
 		if entry.IsValid() {
-			id := h.formatID(currentMatchID)
+			id := utils.FormatMatchID(currentMatchID)
 			matchesMap[id] = append(matchesMap[id], entry)
 		}
 	}
@@ -60,8 +60,4 @@ func (h LogFileHandler) filterAndGroupLogEntriesByMatchID(source *os.File) map[s
 	}
 
 	return matchesMap
-}
-
-func (h LogFileHandler) formatID(gameID int) string {
-	return "game_" + strconv.Itoa(gameID)
 }

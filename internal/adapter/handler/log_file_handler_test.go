@@ -22,7 +22,7 @@ func TestCreateMatchesFromLogFile(t *testing.T) {
 	}{
 		{
 			name:        "given valid log file, should filter entries and create match history",
-			serviceMock: getDefaultServiceMock(),
+			serviceMock: getDefaultCreateMatchServiceMock(),
 			inputFile: func() *os.File {
 				file, err := os.Open("../../../resources/qgames.log")
 				if err != nil {
@@ -46,7 +46,7 @@ func TestCreateMatchesFromLogFile(t *testing.T) {
 	}
 }
 
-func getDefaultServiceMock() port.CreateMatchService {
+func getDefaultCreateMatchServiceMock() port.CreateMatchService {
 	serviceMock := service.NewCreateMatchServiceMock()
 	serviceMock.On("BulkCreate", mock.Anything).Return([]*domain.BulkCreationResult{
 		{

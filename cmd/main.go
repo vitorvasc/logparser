@@ -11,6 +11,7 @@ import (
 )
 
 type ProcessFileFunc func(*os.File) *dto.ProcessResult
+type GetMatchFunc func(string) (*dto.MatchDetails, error)
 
 const (
 	LogFileLocation = "resources/qgames.log"
@@ -19,8 +20,10 @@ const (
 func main() {
 	// dependencies
 	matchRepository := memorydb.NewMatchRepository()
-	matchService := service.NewCreateMatchService(matchRepository)
-	logHandler := handler.NewLogFileHandler(matchService)
+	createMatchService := service.NewCreateMatchService(matchRepository)
+	getMatchService := service.NewGetMatchService(matchRepository)
+	logFileHandler := handler.NewLogFileHandler(createMatchService)
+	getMatchHandler := handler.NewGetMatchHandler(getMatchService)
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
@@ -30,11 +33,18 @@ func main() {
 		scanner.Scan()
 		switch scanner.Text() {
 		case "1":
-			_ = processLogFileAndLoadMatches(logHandler.CreateMatchesFromLogFile)
+			_ = processLogFileAndLoadMatches(logFileHandler.CreateMatchesFromLogFile)
 			println("Matches loaded successfully. Type any key to continue...")
 			scanner.Scan()
 		case "2":
-			println("Generating report by game number...")
+			match, err := generateReportByGameNumber(scanner, getMatchHandler.GetMatchByID)
+			if err != nil {
+				println("An error occurred while generating the report: ", err.Error())
+				println("Type any key to continue...")
+				scanner.Scan()
+			} else {
+				println(match)
+			}
 		case "3":
 			println("Generating report by weapon type...")
 		case "9":
@@ -54,6 +64,7 @@ func renderMenu() {
 }
 
 func processLogFileAndLoadMatches(handler ProcessFileFunc) *dto.ProcessResult {
+	println("Processing log file and loading matches...")
 	// open log file
 	file, err := os.Open(LogFileLocation)
 	if err != nil {
@@ -64,6 +75,8 @@ func processLogFileAndLoadMatches(handler ProcessFileFunc) *dto.ProcessResult {
 	return handler(file)
 }
 
-func generateReportByGameNumber(scanner *bufio.Scanner) {
+func generateReportByGameNumber(scanner *bufio.Scanner, handler GetMatchFunc) (*dto.MatchDetails, error) {
+	println("Please, enter the game number:")
 	scanner.Scan()
+	return handler(scanner.Text())
 }
