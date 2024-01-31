@@ -2,7 +2,6 @@ package handler
 
 import (
 	"os"
-	"reflect"
 	"testing"
 
 	"logparser/internal/adapter/dto"
@@ -10,6 +9,7 @@ import (
 	"logparser/internal/core/port"
 	"logparser/internal/core/service"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -41,9 +41,7 @@ func TestCreateMatchesFromLogFile(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			handler := NewLogFileHandler(testCase.serviceMock)
 			result := handler.CreateMatchesFromLogFile(testCase.inputFile)
-			if !reflect.DeepEqual(result, testCase.expected) {
-				t.Errorf("expected result %v, got %v", testCase.expected, result)
-			}
+			assert.Equal(t, testCase.expected, result)
 		})
 	}
 }

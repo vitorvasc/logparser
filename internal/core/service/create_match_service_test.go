@@ -1,7 +1,6 @@
 package service
 
 import (
-	"reflect"
 	"testing"
 
 	"logparser/internal/adapter/repository/memorydb"
@@ -11,6 +10,7 @@ import (
 	"logparser/internal/core/port"
 
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCreateMatchHistoryService_Create(t *testing.T) {
@@ -269,12 +269,8 @@ func TestCreateMatchHistoryService_Create(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			matchService := NewCreateMatchService(testCase.matchRepository)
 			result, err := matchService.Create(testCase.matchHistory)
-			if !reflect.DeepEqual(err, testCase.expectedError) {
-				t.Errorf("expected error %v, got %v", testCase.expectedError, err)
-			}
-			if !reflect.DeepEqual(result, testCase.expectedResult) {
-				t.Errorf("expected result %v, got %v", testCase.expectedResult, result)
-			}
+			require.Equal(t, testCase.expectedResult, result)
+			require.Equal(t, testCase.expectedError, err)
 		})
 	}
 }
@@ -344,12 +340,7 @@ func TestCreateMatchHistoryService_BulkCreate(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			matchService := NewCreateMatchService(testCase.matchRepository)
 			result := matchService.BulkCreate(testCase.matchHistoryList)
-			if len(result) != len(testCase.expectedResult) {
-				t.Errorf("expected result length %v, got %v", len(testCase.expectedResult), len(result))
-			}
-			if !reflect.DeepEqual(result, testCase.expectedResult) {
-				t.Errorf("expected result %v, got %v", testCase.expectedResult, result)
-			}
+			require.Equal(t, testCase.expectedResult, result)
 		})
 	}
 }

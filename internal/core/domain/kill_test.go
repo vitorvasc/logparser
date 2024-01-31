@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"logparser/internal/config/defines"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestKill_KillerEqualsWorld(t *testing.T) {
@@ -27,9 +29,7 @@ func TestKill_KillerEqualsWorld(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			result := testCase.kill.KillerEqualsWorld()
-			if result != testCase.expectedValue {
-				t.Errorf("expected value %v, got %v", testCase.expectedValue, result)
-			}
+			require.Equal(t, testCase.expectedValue, result)
 		})
 	}
 }
@@ -55,9 +55,7 @@ func TestKill_KillerEqualsTarget(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			result := testCase.kill.KillerEqualsTarget()
-			if result != testCase.expectedValue {
-				t.Errorf("expected value %v, got %v", testCase.expectedValue, result)
-			}
+			require.Equal(t, testCase.expectedValue, result)
 		})
 	}
 }

@@ -1,10 +1,11 @@
 package memorydb
 
 import (
-	"errors"
 	"testing"
 
+	"logparser/internal/config/defines"
 	"logparser/internal/core/domain"
+	apperrors "logparser/internal/core/errors"
 
 	"github.com/stretchr/testify/require"
 )
@@ -39,7 +40,7 @@ func TestFindMatchByID(t *testing.T) {
 		{
 			name:          "given invalid match id, should return match not found",
 			id:            "12345",
-			expectedError: errors.New("match not found"),
+			expectedError: apperrors.NewError(defines.MatchNotFoundErrorCode, "match not found"),
 			expectedMatch: nil,
 		},
 	}

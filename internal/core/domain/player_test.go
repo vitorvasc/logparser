@@ -2,6 +2,8 @@ package domain
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestPlayer_ChangeName(t *testing.T) {
@@ -28,12 +30,8 @@ func TestPlayer_ChangeName(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.player.ChangeName(testCase.newName)
-			if testCase.player.Name != testCase.newName {
-				t.Errorf("expected name %s, got %s", testCase.newName, testCase.player.Name)
-			}
-			if len(testCase.player.NameHistory) != len(testCase.expectedNameHistory) {
-				t.Errorf("expected history length %v, got %v", len(testCase.expectedNameHistory), len(testCase.player.NameHistory))
-			}
+			require.Equal(t, testCase.expectedNameHistory, testCase.player.NameHistory)
+			require.Equal(t, testCase.expectedNameHistory, testCase.player.NameHistory)
 		})
 	}
 }
@@ -65,9 +63,7 @@ func TestPlayer_AddKill(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.player.AddKill()
-			if testCase.player.Kills != testCase.expected {
-				t.Errorf("expected %v kills, got %v", testCase.expected, testCase.player.Kills)
-			}
+			require.Equal(t, testCase.expected, testCase.player.Kills)
 		})
 	}
 }
@@ -99,9 +95,7 @@ func TestPlayer_AddDeath(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.player.AddDeath()
-			if testCase.player.Deaths != testCase.expected {
-				t.Errorf("expected %v deaths, got %v", testCase.expected, testCase.player.Deaths)
-			}
+			require.Equal(t, testCase.expected, testCase.player.Deaths)
 		})
 	}
 }
@@ -145,9 +139,7 @@ func TestPlayer_Equals(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			if testCase.player.Equals(testCase.other) != testCase.expected {
-				t.Errorf("expected %v, got %v", testCase.expected, testCase.player.Equals(testCase.other))
-			}
+			require.Equal(t, testCase.expected, testCase.player.Equals(testCase.other))
 		})
 	}
 }

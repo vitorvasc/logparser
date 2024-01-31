@@ -1,12 +1,13 @@
 package mapper
 
 import (
-	"reflect"
 	"testing"
 
 	"logparser/internal/adapter/dto"
 	"logparser/internal/config/defines"
 	"logparser/internal/core/domain"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestFromLogEntriesDtoToMatchHistory(t *testing.T) {
@@ -47,9 +48,7 @@ func TestFromLogEntriesDtoToMatchHistory(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			result := FromLogEntriesDtoToMatchHistory(testCase.inputMatchID, testCase.inputLogEntries)
-			if !reflect.DeepEqual(result, testCase.expected) {
-				t.Errorf("expected result %v, got %v", testCase.expected, result)
-			}
+			require.Equal(t, testCase.expected, result)
 		})
 	}
 }
@@ -94,9 +93,7 @@ func TestFromBulkCreationResultToProcessResult(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			result := FromBulkCreationResultToProcessResult(testCase.input)
-			if !reflect.DeepEqual(result, testCase.expected) {
-				t.Errorf("expected result %v, got %v", testCase.expected, result)
-			}
+			require.Equal(t, testCase.expected, result)
 		})
 	}
 }

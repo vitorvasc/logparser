@@ -1,6 +1,10 @@
 package domain
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
 
 func TestMatch_InsertOrUpdatePlayer(t *testing.T) {
 	testCases := []struct {
@@ -23,8 +27,16 @@ func TestMatch_InsertOrUpdatePlayer(t *testing.T) {
 					Players: []*Player{NewPlayer(1, "vitor")},
 				}
 			}(),
-			player:   NewPlayer(1, "vitor2"),
-			expected: []*Player{NewPlayer(1, "vitor2")},
+			player: NewPlayer(1, "vitor2"),
+			expected: []*Player{
+				{
+					ID:          1,
+					Name:        "vitor2",
+					NameHistory: []string{"vitor"},
+					Kills:       0,
+					Deaths:      0,
+				},
+			},
 		},
 		{
 			name: "given a match with more than one player, should add the player",
@@ -51,9 +63,7 @@ func TestMatch_InsertOrUpdatePlayer(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.match.InsertOrUpdatePlayer(testCase.player)
-			if len(testCase.match.Players) != len(testCase.expected) {
-				t.Errorf("expectedMatchKills players length %v, got %v", len(testCase.expected), len(testCase.match.Players))
-			}
+			require.Equal(t, testCase.expected, testCase.match.Players)
 		})
 	}
 }
@@ -115,21 +125,13 @@ func TestMatch_NoticeKill(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			testCase.match.NoticeKill(testCase.kill)
-			if testCase.match.TotalKills != testCase.expectedMatchKills {
-				t.Errorf("expectedMatchKills %v, got %v", testCase.expectedMatchKills, testCase.match.TotalKills)
-			}
-			if len(testCase.match.KillHistory) != len(testCase.expectedMatchKillsHistory) {
-				t.Errorf("expectedMatchKillsHistory length %v, got %v", len(testCase.expectedMatchKillsHistory), len(testCase.match.KillHistory))
-			}
+
+			require.Equal(t, testCase.expectedMatchKills, testCase.match.TotalKills)
+			require.Equal(t, testCase.expectedMatchKillsHistory, testCase.match.KillHistory)
+			require.Equal(t, testCase.expectedTargetDeaths, testCase.match.GetPlayerByID(testCase.kill.TargetID).Deaths)
 
 			if !testCase.kill.KillerEqualsWorld() {
-				if killer := testCase.match.GetPlayerByID(testCase.kill.KillerID); killer.Kills != testCase.expectedKillerKills {
-					t.Errorf("expectedKillerKills %v, got %v", testCase.expectedKillerKills, killer.Kills)
-				}
-			}
-
-			if target := testCase.match.GetPlayerByID(testCase.kill.TargetID); target.Deaths != testCase.expectedTargetDeaths {
-				t.Errorf("expectedTargetDeaths %v, got %v", testCase.expectedTargetDeaths, target.Deaths)
+				require.Equal(t, testCase.expectedKillerKills, testCase.match.GetPlayerByID(testCase.kill.KillerID).Kills)
 			}
 		})
 	}
@@ -198,9 +200,7 @@ func TestMatch_GetPlayerByID(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			if player := testCase.match.GetPlayerByID(testCase.playerID); !player.Equals(testCase.expected) {
-				t.Errorf("expected %v, got %v", testCase.expected, player)
-			}
+			require.Equal(t, testCase.expected, testCase.match.GetPlayerByID(testCase.playerID))
 		})
 	}
 }
