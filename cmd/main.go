@@ -29,25 +29,25 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		renderMenu()
-		println("Please, enter the option number:")
+		print("Please, enter the option number: ")
 
 		scanner.Scan()
 		switch scanner.Text() {
 		case "1":
 			_ = processLogFileAndLoadMatches(logFileHandler.CreateMatchesFromLogFile)
-			println("Matches loaded successfully. Type any key to continue...")
-			scanner.Scan()
+			print("Matches loaded successfully.")
+			typeAnyKeyToContinue(scanner)
 		case "2":
 			match, err := generateReportByGameNumber(scanner, getMatchHandler.GetMatchByID)
 			if err != nil {
-				println("An error occurred while generating the report: ", err.Error())
-				println("Type any key to continue...")
-				scanner.Scan()
-			} else {
-				result, _ := json.MarshalIndent(match, "", "\t")
-				print(string(result))
-				println("\nType any key to continue...")
+				print("An error occurred while generating the report: ", err.Error())
+				typeAnyKeyToContinue(scanner)
+				continue
 			}
+
+			result, _ := json.MarshalIndent(match, "", "\t")
+			print(string(result))
+			typeAnyKeyToContinue(scanner)
 		case "3":
 			println("Generating report by weapon type...")
 		case "9":
@@ -60,6 +60,9 @@ func main() {
 }
 
 func renderMenu() {
+	for i := 0; i < 10; i++ {
+		println()
+	}
 	println("[MENU] The following options are available:")
 	println("1 - Process log file and load matches")
 	println("2 - Generate report by game number")
@@ -79,7 +82,12 @@ func processLogFileAndLoadMatches(handler ProcessFileFunc) *dto.ProcessResult {
 }
 
 func generateReportByGameNumber(scanner *bufio.Scanner, handler GetMatchFunc) (*dto.MatchDetails, error) {
-	println("Please, enter the game number:")
+	print("Please, enter the game number: ")
 	scanner.Scan()
 	return handler(scanner.Text())
+}
+
+func typeAnyKeyToContinue(scanner *bufio.Scanner) {
+	print("\nType any key to continue...")
+	scanner.Scan()
 }
