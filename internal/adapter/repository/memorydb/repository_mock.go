@@ -30,3 +30,11 @@ func (repository *matchRepositoryMock) FindMatchByID(id string) (*domain.Match, 
 	}
 	return args.Get(0).(*domain.Match), nil
 }
+
+func (repository *matchRepositoryMock) FindAllMatches() ([]*domain.Match, errors.BaseError) {
+	args := repository.Called()
+	if args.Get(1) != nil {
+		return nil, args.Get(1).(errors.BaseError)
+	}
+	return args.Get(0).([]*domain.Match), nil
+}

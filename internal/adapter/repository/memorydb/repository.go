@@ -29,3 +29,11 @@ func (db *repository) FindMatchByID(id string) (*domain.Match, apperrors.BaseErr
 	}
 	return match, nil
 }
+
+func (db *repository) FindAllMatches() ([]*domain.Match, apperrors.BaseError) {
+	matchList := make([]*domain.Match, 0, len(db.instance))
+	for _, match := range db.instance {
+		matchList = append(matchList, match)
+	}
+	return matchList, nil
+}

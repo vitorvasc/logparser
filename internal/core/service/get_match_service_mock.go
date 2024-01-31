@@ -22,3 +22,11 @@ func (service *getMatchServiceMock) GetMatchByID(matchID string) (*domain.Match,
 	}
 	return args.Get(0).(*domain.Match), nil
 }
+
+func (service *getMatchServiceMock) GetAllMatches() ([]*domain.Match, errors.BaseError) {
+	args := service.Called()
+	if args.Get(1) != nil {
+		return nil, args.Get(1).(errors.BaseError)
+	}
+	return args.Get(0).([]*domain.Match), nil
+}

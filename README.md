@@ -59,7 +59,35 @@ When you select the second option, the application will ask for the game number 
 This type of report generates the details for the chosen match number. The result will be similar to the previous option, but with the additional information for deaths by cause. The result will be similar to the following example:
 
 ```json
-TBD
+{
+  "game_9": {
+    "total_kills": 67,
+    "players": [
+      "Oootsimo",
+      "Dono da Bola",
+      "Zeh",
+      "Chessus",
+      "Mal",
+      "Assasinu Credi"
+    ],
+    "kills": {
+      "Assasinu Credi": 8,
+      "Chessus": 11,
+      "Dono da Bola": 2,
+      "Mal": 6,
+      "Oootsimo": 8,
+      "Zeh": 15
+    },
+    "kills_by_means": {
+      "MOD_FALLING": 3,
+      "MOD_MACHINEGUN": 3,
+      "MOD_RAILGUN": 10,
+      "MOD_ROCKET": 17,
+      "MOD_ROCKET_SPLASH": 25,
+      "MOD_SHOTGUN": 1,
+      "MOD_TRIGGER_HURT": 8
+    }
+  }
 ```
 
 ### Option 4: Generate complete report (all games, including deaths by cause)
@@ -67,5 +95,92 @@ TBD
 This type of report generates the details for all matches. The result will be similar to the previous option, but containing the information for all matches. The result will be similar to the following example:
 
 ```json
-TBD
+{
+  "game_7": {
+    "total_kills": 130,
+    "players": [
+      "Oootsimo",
+      "Isgalamido",
+      "Zeh",
+      "Dono da Bola",
+      "Mal",
+      "Assasinu Credi",
+      "Chessus"
+    ],
+    "kills": {
+      "Assasinu Credi": 19,
+      "Chessus": 0,
+      "Dono da Bola": 12,
+      "Isgalamido": 18,
+      "Mal": 9,
+      "Oootsimo": 24,
+      "Zeh": 13
+    },
+    "kills_by_means": {
+      "MOD_FALLING": 7,
+      "MOD_MACHINEGUN": 9,
+      "MOD_RAILGUN": 9,
+      "MOD_ROCKET": 29,
+      "MOD_ROCKET_SPLASH": 49,
+      "MOD_SHOTGUN": 7,
+      "MOD_TRIGGER_HURT": 20
+    }
+  },
+  "game_8": {
+    "total_kills": 89,
+    "players": [
+      "Oootsimo",
+      "Isgalamido",
+      "Zeh",
+      "Dono da Bola",
+      "Mal",
+      "Assasinu Credi"
+    ],
+    "kills": {
+      "Assasinu Credi": 11,
+      "Dono da Bola": 3,
+      "Isgalamido": 24,
+      "Mal": 0,
+      "Oootsimo": 16,
+      "Zeh": 15
+    },
+    "kills_by_means": {
+      "MOD_FALLING": 6,
+      "MOD_MACHINEGUN": 4,
+      "MOD_RAILGUN": 12,
+      "MOD_ROCKET": 18,
+      "MOD_ROCKET_SPLASH": 39,
+      "MOD_SHOTGUN": 1,
+      "MOD_TRIGGER_HURT": 9
+    }
+  },
+  "game_9": {
+    "total_kills": 67,
+    "players": [
+      "Oootsimo",
+      "Dono da Bola",
+      "Zeh",
+      "Chessus",
+      "Mal",
+      "Assasinu Credi"
+    ],
+    "kills": {
+      "Assasinu Credi": 8,
+      "Chessus": 11,
+      "Dono da Bola": 2,
+      "Mal": 6,
+      "Oootsimo": 8,
+      "Zeh": 15
+    },
+    "kills_by_means": {
+      "MOD_FALLING": 3,
+      "MOD_MACHINEGUN": 3,
+      "MOD_RAILGUN": 10,
+      "MOD_ROCKET": 17,
+      "MOD_ROCKET_SPLASH": 25,
+      "MOD_SHOTGUN": 1,
+      "MOD_TRIGGER_HURT": 8
+    }
+  }
+}
 ```

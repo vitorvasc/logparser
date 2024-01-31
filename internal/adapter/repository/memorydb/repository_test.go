@@ -60,3 +60,23 @@ func TestFindMatchByID(t *testing.T) {
 		})
 	}
 }
+
+func TestFindAllMatches(t *testing.T) {
+	r := NewMatchRepository()
+
+	err := r.SaveMatch(&domain.Match{
+		ID: "123",
+	})
+	require.Nil(t, err)
+
+	err = r.SaveMatch(&domain.Match{
+		ID: "456",
+	})
+	require.Nil(t, err)
+
+	matchList, err := r.FindAllMatches()
+	require.Nil(t, err)
+	require.Len(t, matchList, 2)
+	require.Equal(t, "123", matchList[0].ID)
+	require.Equal(t, "456", matchList[1].ID)
+}

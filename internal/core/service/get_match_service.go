@@ -30,3 +30,12 @@ func (service getMatchService) GetMatchByID(id string) (*domain.Match, errors.Ba
 
 	return match, nil
 }
+
+func (service getMatchService) GetAllMatches() ([]*domain.Match, errors.BaseError) {
+	matches, err := service.repository.FindAllMatches()
+	if err != nil {
+		return nil, errors.NewError(defines.UnexpectedErrorCode, "unexpected error when getting all matches")
+	}
+
+	return matches, nil
+}

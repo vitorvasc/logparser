@@ -8,6 +8,7 @@ import (
 type MatchRepository interface {
 	SaveMatch(match *domain.Match) errors.BaseError
 	FindMatchByID(id string) (*domain.Match, errors.BaseError)
+	FindAllMatches() ([]*domain.Match, errors.BaseError)
 }
 
 type CreateMatchService interface {
@@ -17,4 +18,5 @@ type CreateMatchService interface {
 
 type GetMatchService interface {
 	GetMatchByID(id string) (*domain.Match, errors.BaseError)
+	GetAllMatches() ([]*domain.Match, errors.BaseError)
 }
