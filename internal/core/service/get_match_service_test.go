@@ -60,7 +60,7 @@ func TestGetMatchService_GetMatchByID(t *testing.T) {
 			expectedError: nil,
 		},
 		{
-			name: "should return error if match does not exist",
+			name: "should return not found error if match does not exist",
 			matchRepository: func() port.MatchRepository {
 				matchRepository := memorydb.NewMatchRepositoryMock()
 				matchRepository.
@@ -71,6 +71,19 @@ func TestGetMatchService_GetMatchByID(t *testing.T) {
 			}(),
 			expectedResult: nil,
 			expectedError:  errors.NewError(defines.MatchNotFoundErrorCode, "match not found"),
+		},
+		{
+			name: "should return unexpected error if repository returns unexpected error",
+			matchRepository: func() port.MatchRepository {
+				matchRepository := memorydb.NewMatchRepositoryMock()
+				matchRepository.
+					On("FindMatchByID", mock.Anything).
+					Return(nil, errors.NewError(defines.UnexpectedErrorCode, "unexpected error when getting match by id")).
+					Once()
+				return matchRepository
+			}(),
+			expectedResult: nil,
+			expectedError:  errors.NewError(defines.UnexpectedErrorCode, "unexpected error when getting match by id"),
 		},
 	}
 
