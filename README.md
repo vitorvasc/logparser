@@ -31,7 +31,27 @@ When you select the first option, the application will search and load the log f
 When you select the second option, the application will ask for the game number you want to generate the report. After that, it will show the following information:
 
 ```json
-TBD
+{
+  "game_9": {
+    "total_kills": 67,
+    "players": [
+      "Oootsimo",
+      "Dono da Bola",
+      "Zeh",
+      "Chessus",
+      "Mal",
+      "Assasinu Credi"
+    ],
+    "kills": {
+      "Assasinu Credi": 8,
+      "Chessus": 11,
+      "Dono da Bola": 2,
+      "Mal": 6,
+      "Oootsimo": 8,
+      "Zeh": 15
+    }
+  }
+}
 ```
 
 ### Option 3: Generate report by game number, including deaths by cause
